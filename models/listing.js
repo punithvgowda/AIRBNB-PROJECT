@@ -19,7 +19,7 @@ const listingschema = new Schema({ // ✅ Use Schema as constructor
         }
     },
     price: Number,
-    locationn: String,
+    location: String,
     country: String,
 });
 
