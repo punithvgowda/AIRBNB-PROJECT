@@ -8,7 +8,7 @@ let MONGOOSE_URL="mongodb://127.0.0.1:27017/AIRBNB";
 let port=3000;
 
 app.listen(port,()=>{
-    console.log("port is listening")
+    console.log("port is now listening")
 })
     
 app.get("/",(req,res)=>{
