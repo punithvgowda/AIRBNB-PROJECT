@@ -11,10 +11,12 @@ const listingschema = new Schema({ // ✅ Use Schema as constructor
         required: true,
     },
     image: {
-        type: String,
-        set: (v) => v === " " 
-            ? "https://media.privateupgrades.com/_data/default-hotel_image/13/66895/conrad-bengaluru-10_400x400_auto.jpg" 
-            : v,
+        filename:{
+            type:String,
+        },
+        url:{
+            type:String,
+        }
     },
     price: Number,
     locationn: String,
