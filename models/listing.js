@@ -5,6 +5,8 @@ const listingschema = new Schema({ // ✅ Use Schema as constructor
     title: {
         type: String,
         required: true,
+        
+
     },
     description: {
         type: String,
@@ -18,9 +20,16 @@ const listingschema = new Schema({ // ✅ Use Schema as constructor
             type:String,
         }
     },
-    price: Number,
-    location: String,
-    country: String,
+    price:{
+        type:Number,
+    },
+    location:{
+        type:String,
+        required:true,
+    },
+    country:{
+        type:String,
+    }
 });
 
 const Listing = mongoose.model("Listing", listingschema); // ✅ Pass schema object, not string
