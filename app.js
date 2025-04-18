@@ -2,10 +2,15 @@ const express=require("express");
 const app=express();
 const mongoose=require("mongoose")
 const Listing=require("./models/listing.js")
+
 const path=require("path");
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
 app.use(express.urlencoded({ extended: true }));
+
+//converting post request to put request
+const methodOverride = require("method-override");
+app.use(methodOverride("_method"));
 
 
  
@@ -48,9 +53,29 @@ app.get("/listings", async (req, res) => {
     const allListing = await Listing.find({});
     res.render("listing/index.ejs",{ allListing });
  });
+ //new.ejs
+ app.get("/listings/new",(req,res)=>{
+    res.render("listing/new.ejs")
+    console.log("new.ejs file was rendered sucessfully")
+  });
  //show route
 app.get("/listings/:id",async(req,res )=>{
     let {id}=req.params;
     const listings=await Listing.findById(id);
     res.render("listing/show.ejs",{listings})
+    console.log("ejs file rendered sucessfully")
 })
+//create route
+app.post("/listings",(req,res)=>{
+    console.log(req.body.Listing) // object will get created atomatically
+    const listing=new Listing(req.body.Listing) //creating new instance
+    listing.save();                             // saved to database
+    res.redirect("listings")
+})
+//edit route
+app.get("/listings/:id/edit",async (req,res)=>{
+    let {id}=req.params;
+    let listing=await Listing.findById(id);
+     res.render("listing/edit.ejs",{listing})
+})
+//update

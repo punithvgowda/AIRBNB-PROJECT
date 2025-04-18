@@ -10,17 +10,12 @@
     <h3>listings details</h3>
     <li><%=listings.title%></li>
     <li><%=listings.description%></li>
-    <li><%=listings.price%></li>
-    <li><%=listings.country%></li>
+    <li>  &#8377;<%=listings.price.toLocaleString("en-IN")%></li>
     <li><%=listings.location%></li>
+    <li><%=listings.country%></li>
+    <br>
     
-    
-   
-
-
-
-
-
+    <a href="/listings/<%=listings._id%>/edit">Edit this info</a>
 </ul>
 </body>
 </html>
