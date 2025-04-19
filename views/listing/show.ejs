@@ -1,21 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>show routes</title>
-</head>
+<%layout("/layouts/boilerplate")%>
 <body>
-    <ul>
-    <h3>listings details</h3>
-    <li><%=listings.title%></li>
-    <li><%=listings.description%></li>
-    <li>  &#8377;<%=listings.price.toLocaleString("en-IN")%></li>
-    <li><%=listings.location%></li>
-    <li><%=listings.country%></li>
-    <br>
-    
-    <a href="/listings/<%=listings._id%>/edit">Edit this info</a>
-</ul>
+    <div class="row col-8 offset-1">
+    <div class="showcard mt-4" >
+        <img src="<%=listings.image.url%>" class="card-img-top" alt="...">
+        <div class="card-body">
+          <p class="card-text"><ul>
+            <h3>Venue Details</h3>
+            <li><%=listings.title%></li>
+            <li><%=listings.description%></li>
+            <li>  &#8377;<%=listings.price.toLocaleString("en-IN")%></li>
+            <li><%=listings.location%></li>
+            <li><%=listings.country%></li>
+            <br>
+            </ul></p>
+        </div>
+      </div>
+    </div>
+  
 </body>
-</html>
+<div class="btns">
+    <a href="/listings/<%=listings._id%>/edit"> <button type="submit" class="btn btn-danger col-12 offset-2" >Edit Info</button></a>
+
+<form method="post" action="/listings/<%=listings._id%>">
+    <button type="submit" class="btn btn-danger mb-3 ms-4">Delete</button></form>
+</div>

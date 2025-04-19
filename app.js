@@ -2,30 +2,22 @@ const express=require("express");
 const app=express();
 const mongoose=require("mongoose")
 const Listing=require("./models/listing.js")
+const ejsmate=require("ejs-mate")
 
 const path=require("path");
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
 app.use(express.urlencoded({ extended: true }));
+app.engine('ejs', ejsmate);
+app.use(express.static(path.join(__dirname,"/public")))
 
 //converting post request to put request
 const methodOverride = require("method-override");
 app.use(methodOverride("_method"));
 
 
- 
+ //connection with mongoose database
 let MONGOOSE_URL="mongodb://127.0.0.1:27017/AIRBNB";
-
-let port=3000;
-
-app.listen(port,()=>{
-    console.log("port is now listening")
-})
-    
-app.get("/",(req,res)=>{
-    res.send(" hlo there just chilling")
-    
-})
 async function main(){
     await mongoose.connect(MONGOOSE_URL);
 }
@@ -37,17 +29,19 @@ main(
 .catch((err)=>{
     console.log(err)
 })
- //app.get("/testing",async (req,res)=>{
-   // const samplelisting=new Listing({
-      //  title:"golden palms",
-      //  description:"one among the top hotels in bengaluru",
-       // image:"H",
-       // price:2000,
-       // location:"dasanapura,bengaluru",
-       // country:"bharath"
-   // });
-   //  await samplelisting.save();
-//})
+
+//port
+let port=3000;
+app.listen(port,()=>{
+    console.log("port is now listening")
+})
+    
+app.get("/",(req,res)=>{
+    res.send(" hlo there just chilling")
+    
+})
+
+
 //index route
 app.get("/listings", async (req, res) => {
     const allListing = await Listing.find({});
@@ -78,4 +72,16 @@ app.get("/listings/:id/edit",async (req,res)=>{
     let listing=await Listing.findById(id);
      res.render("listing/edit.ejs",{listing})
 })
-//update
+//update route
+app.put("/listing/:id",async(req,res)=>{
+    let {id}=req.params;
+    await Listing.findByIdAndUpdate(id,{...req.body.Listing})
+   res.redirect(`/listings`)
+})
+//delete route
+app.post("/listings/:id",async(req,res)=>{
+    let{id}=req.params;
+    const deletedhotel=await Listing.findByIdAndDelete(id);
+    console.log(deletedhotel);
+    res.redirect("/listings")
+})
