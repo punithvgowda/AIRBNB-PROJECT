@@ -90,9 +90,10 @@ main(
 
 //port
 const port = process.env.PORT || 4000 
-app.listen(port,()=>{
-    console.log("port is now listening")
-}) ;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+
   app.use(session(sessionOptions));
     app.use(flash());
       app.use(passport.initialize());//intialize
@@ -109,7 +110,7 @@ app.listen(port,()=>{
         res.locals.error=req.flash("error");  
         res.locals.sucess=req.flash("sucess");
         res.locals.currentuserinfo=req.user;
-        console.log(req.user);
+        // console.log(req.user);
         
         next();
     });
@@ -119,11 +120,11 @@ app.listen(port,()=>{
 });
 app.get("/search",async(req,res)=>{
     
-    console.log(req.query.destinyname);
+    // console.log(req.query.destinyname);
    let searchindb=req.query.destinyname;
-   console.log(searchindb);
+//    console.log(searchindb);
  let resfromdb= await Listing.find({title:searchindb});
-console.log(resfromdb);
+// console.log(resfromdb);
 if(resfromdb.length==0){
     req.flash("error"," The Hotel you requested for doesn't exist");
     res.redirect("/listings");
@@ -133,11 +134,7 @@ else{
 
     let id = resfromdb[0]._id.toString();
 const listings=await Listing.findById(id).populate({path:"reviews",populate:{ path:"author",}}).populate('owner');
-// if(!listings){
-//     req.flash("error","The Hotel you requested for doesn't exist");
-//    return  res.redirect("/listings")
-// }
-     //console.log(listings);
+console.log(listings);
     
 
     console.log("Populated Reviews:", listings.reviews);
