@@ -112,7 +112,11 @@ app.listen(port,()=>{
         console.log(req.user);
         
         next();
-    })
+    });
+
+    app.get("/", (req, res) => {
+  res.send("Hello from Airbnb clone!");
+});
 app.get("/search",async(req,res)=>{
     
     console.log(req.query.destinyname);
@@ -143,16 +147,7 @@ const listings=await Listing.findById(id).populate({path:"reviews",populate:{ pa
     console.log("ejs file rendered sucessfully")
 }
 })
-  
-
-// app.get("/demouser",async (req,res)=>{
-//     const user1r=new user({
-//         email:"punithvgowda@gmail.com",
-//         username:"punith"
-//     })
-//     let registereduser= await user.register(user1r,"fakepassword");
-//     res.send(registereduser);
-// });
+   
 
 
 
@@ -161,7 +156,7 @@ const listings=await Listing.findById(id).populate({path:"reviews",populate:{ pa
 
 app.use("/listings", listingsroute); // ✅ use the imported router, not a string
 app.use("/listings/:id/review",reviewroute);
-app.use("/",userroute)
+app.use("/",userroute);
 
 
 
