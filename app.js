@@ -79,19 +79,16 @@ app.use(methodOverride("_method"));
 async function main(){
     await mongoose.connect(MONGOOSEATLAS_URL);
 }
-main(
+main().then(() => {
+  console.log("✅ MongoDB connection successful");
 
-).then(()=>{
-    console.log("connection succesfull")
-})
-.catch((err)=>{
-    console.log(err)
-})
+  const port = process.env.PORT || 4000;
+  app.listen(port, () => {
+    console.log(`🚀 Server running on port ${port}`);
+  });
 
-//port
-const port = process.env.PORT || 4000 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+}).catch((err) => {
+  console.error("❌ MongoDB connection failed:", err);
 });
 
   app.use(session(sessionOptions));
