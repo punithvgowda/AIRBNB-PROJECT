@@ -89,7 +89,7 @@ main(
 })
 
 //port
-let port=3000;
+const port = process.env.PORT || 4000 
 app.listen(port,()=>{
     console.log("port is now listening")
 }) ;
@@ -114,9 +114,9 @@ app.listen(port,()=>{
         next();
     });
 
-    app.get("/", (req, res) => {
-  res.send("Hello from Airbnb clone!");
-});
+//     app.get("/", (req, res) => {
+//   res.send("Hello from Airbnb clone!");
+// });
 app.get("/search",async(req,res)=>{
     
     console.log(req.query.destinyname);
