@@ -1,16 +1,22 @@
 <%layout("/layouts/boilerplate")%>
+
+  <h1><%=listings.title%></h1>
 <body>
-    <div class="row col-8 offset-1">
-    <div class="showcard mt-4" >
-        <img src="<%=listings.image.url%>" class="card-img-top" alt="...">
+
+    <div class="row col-8 offset-1  listing-card ">
+    <div class="showcard mt-4 " >
+        <img src="<%=listings.image.url%>" class="card-img-top" alt="..." height="400px">
         <div class="card-body">
           <p class="card-text"><ul>
             <h3>Venue Details</h3>
-            <li><%=listings.title%></li>
-            <li><%=listings.description%></li>
-            <li>  &#8377;<%=listings.price.toLocaleString("en-IN")%></li>
-            <li><%=listings.location%></li>
-            <li><%=listings.country%></li>
+            <p> <li><B>Owned By:<%=listings.owner.username%></B></li></p>
+           <p> <li><%=listings.title%></li></p>
+           <p> <li><%=listings.description%></li></p>
+           <p><li>  &#8377;<%=listings.price.toLocaleString("en-IN")%></li></p> 
+           <p>  <li><%=listings.location%></li></p>           
+          <p>  <li><%=listings.country%></li></p>
+          
+           
             <br>
             </ul></p>
         </div>
@@ -18,9 +24,137 @@
     </div>
   
 </body>
-<div class="btns">
+ <hr>
+<div>
+    <% if(currentuserinfo && currentuserinfo._id.equals(listings.owner._id)) {%>
+  <div class="btns">
     <a href="/listings/<%=listings._id%>/edit"> <button type="submit" class="btn btn-danger col-12 offset-2" >Edit Info</button></a>
 
-<form method="post" action="/listings/<%=listings._id%>">
-    <button type="submit" class="btn btn-danger mb-3 ms-4">Delete</button></form>
+<form method="post" action="/listings/<%=listings._id%>"class="needs-validation" novalidate >
+    <button type="submit" class="btn btn-dark mb-3 ms-4">Delete</button></form>
 </div>
+  <%}%>
+</div>
+
+<div>
+<form action="/listings/<%= listings._id %>/review" method="POST" class="needs-validation"  novalidate>
+  <% if(currentuserinfo && currentuserinfo._id.equals(listings.owner._id)) {%>
+  <div  class="mb-3 mt-3">
+     <label for="rating" class="form-label"> <h5><b>Rateing:</b></h5></label>
+<fieldset class="starability-slot">
+ <input type="radio" 
+  id="rating" 
+  class="starrating" 
+  name="review[rating]" 
+  value="1" 
+  checked aria-label="No rating." />
+  <input type="radio" id="first-rate1" name="review[rating]"   class="starrating" value="1" />
+  <label for="first-rate1" title="Terrible">1 star</label>
+  <input type="radio" id="first-rate2" class="starrating"  name="review[rating]"  value="2" />
+  <label for="first-rate2" title="Not good">2stars</label>
+  <input type="radio" id="first-rate3" class="starrating"  name="review[rating]"  value="3" />
+  <label for="first-rate3" title="Average">3 stars</label>
+  <input type="radio" id="first-rate4" class="starrating"  name="review[rating]"  value="4" />
+  <label for="first-rate4" title="Very good">4 stars</label>
+  <input type="radio" id="first-rate5" class="starrating" name="review[rating]"value="5" />
+  <label for="first-rate5" title="Amazing">5 stars</label>
+  
+
+</fieldset>
+</div>
+<div class="mb-3 mt-3">
+  <label for="comment"  class="form-label"> <h5><b>Comment:</b></h5></label>
+ 
+  <textarea  id="comment"  class="form-control needs-validation" name="review[comment]" cols="30" rows="9"   required></textarea>
+     <div class="invalid-feedback">Please enter a comment before submitting the review</div>
+       <div class="valid-feedback">Looks Great</div>
+  <button  class="btn btn-secondary mb-3 mt-3" >Submit</button>
+</div>
+  <%}%>
+  
+
+</form>
+    <p><b>All Reviews</b></p>
+<div class="wholereviewdiv">
+<% if(listings.reviews.length>0) {%>
+  
+ <% for (let review of listings.reviews) { %>
+  <div class="card col-5 ms-3 mb-3">
+    <div class="reviewcard">
+      <div class="card-body">
+        <h5 class="card-title">@<%=review.author.username%></h5>
+        <p class="starability-result" data-rating=<%= review.rating %>></p>
+        <p class="card-text"><%= review.comment %></p>
+
+        <form class="mb-3 mt-2" method="post" action="/listings/<%= listings._id %>/review/<%= review._id %>?_method=DELETE">
+          <% if(currentuserinfo && currentuserinfo._id.equals(review.author._id)) { %>
+            <button class="btn btn-sm btn-danger">Delete</button>
+          <% } %>
+        </form>
+
+      </div> <!-- card-body -->
+    </div> <!-- reviewcard -->
+  </div> <!-- card -->
+<% } %>
+
+  <% } %>
+  </div>
+
+
+
+
+  <div class="col-8 offset-0 mb-3">
+    <h3>Where You'll be</h3>
+    <div id="map" style="width: 100%; height: 500px;"></div>
+  </div>
+
+ 
+  <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+<script>
+    const coordinates = <%- JSON.stringify(listings.geometry.coordinates) %>;
+ 
+
+  const map = new maplibregl.Map({
+    container: 'map',
+    style: 'https://api.maptiler.com/maps/streets-v2/style.json?key=4C2dMMd6o539UNhA2tdO',
+    center: coordinates,
+    zoom: 16
+  });
+
+  map.addControl(new maplibregl.NavigationControl());
+
+  new maplibregl.Marker({ color: 'red' })
+    .setLngLat(coordinates)
+    .setPopup(new maplibregl.Popup().setText("<%= listings.title %>"))
+    .addTo(map);
+
+  map.on('load', () => {
+    map.addLayer({
+      id: '3d-buildings',
+      source: 'openmaptiles',
+      'source-layer': 'building',
+      type: 'fill-extrusion',
+      minzoom: 15,
+      paint: {
+        'fill-extrusion-color': '#aaa',
+        'fill-extrusion-height': ['get', 'render_height'],
+        'fill-extrusion-base': 0,
+        'fill-extrusion-opacity': 0.6
+      }
+    });
+  });
+</script>
+
+
+
+
+</div>
+
+</div>
+ 
+
+   
+
+
+
+

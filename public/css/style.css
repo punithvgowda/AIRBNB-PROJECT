@@ -53,18 +53,55 @@ body{
 }
 
 
-.card{
-    border: none !important;
+.listing-card{
+    /* border:none !important; */
     margin-bottom: 2rem;
+     
+    border: none !important;
+    box-shadow: none !important;
+    border-radius:25%;
+    outline: none !important;
 }
 .card-img-top{
-    border-radius: 1rem !important;
+    /* border-radius: none!important; */
     width: 100%;
     object-fit: cover !important;
+
+    
+    border-radius:5%;
 }
+.card{
+    border: 2px black !important;
+    box-shadow: none !important;
+    border-radius: 25%;
+    outline: none !important;
+}
+
+
 .card-body{
+     border: 2px black !important;
     padding: 0 !important;
+   
+    
+  
 }
+
+.reviewcard{
+     border: 2px solid rgb(0, 0, 0) ;
+     align-items: center;
+     border-radius: 1.5%;
+     box-shadow: 1px px 1px 1px;
+     padding:15px;
+ 
+}
+
+.wholereviewdiv{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+    
+
 .card-text p{
     font-weight:400;
 }

@@ -3,33 +3,48 @@
     <br>
     <br>
     <h1>Create New List</h1>
-    <form method="post" action="/listings">
+    <form method="post" action="/listings" class=" needs-validation" novalidate enctype="multipart/form-data">
         <div class="row">
         <div class="col-8 offset-2" >
        <div class="mb-3"> 
         <label for="title" class="form-label">Title</label>
-        <input name="Listing[title]" placeholder="Hotel Name" type="text" class="form-control" id="title"></div>
+        <input name="Listing[title]" placeholder="Hotel Name" type="text" class="form-control" id="title" required>
+        <div class="invalid-feedback">Title Should Be Valid!</div>
+        <div class="valid-feedback">Looks Great</div>
+    </div>
         <div class="mb-3">
             <label for="in-description" class="from-label">Description</label>
-       <textarea name="Listing[description]" placeholder="Description" type="text" class="form-control" id="in-description"></textarea>
+       <textarea name="Listing[description]" placeholder="Description" type="text" class="form-control" id="in-description"  required></textarea>
+       <div class="invalid-feedback">Enter a Short Description</div>
+       <div class="valid-feedback">Looks Great</div>
     </div>
-    <div class="mb-3">
-        <label for="in-url" class="form-label">Image Link</label>
-       <input name="Listing[image][url]" placeholder="Enter Image url/link" type="text" id="in-url" class="form-control">
+
+
+        <div class="mb-3">
+        <label for="image" class="form-label">Listing Image </label>
+       <input name="Listing[image][url]" placeholder="Drop Image Here " type="file" id="in-url" class="form-control">
     </div>
+
     <div class="row">
         <div class="mb-3 col-md-4">
             <label for="in-price" class="form-label">Price</label>
-           <input name="Listing[price]" placeholder="Enter Price"id="in-price" class="form-control"type="Number"></div>
+           <input name="Listing[price]" placeholder="Enter Price"id="in-price" class="form-control"type="Number" required>
+           <div class="invalid-feedback">Enter a Price</div>
+           <div class="valid-feedback">Looks Great</div>
+        </div>
            <div class="mb-3 col-md-8">
-            <label for="in-location" class="form-label">Location</label>
-           <input name="Listing[location]" placeholder="Enter Location" type="text" class="form-control" id="in-location">
+            <label for="in-location" class="form-label" >Location</label>
+           <input name="Listing[location]" placeholder="Enter Location" type="text" class="form-control" id="in-location" required>
+           <div class="invalid-feedback">Location Should Be Valid</div>
+       <div class="valid-feedback">Looks Great</div>
         </div>
     </div>
       
       <div class="mb-3">
         <label for="in-country" class="form-label">Country</label>
-       <input name="Listing[country]" placeholder="Enter Country" type="text" class="form-control" id="in-country">
+       <input name="Listing[country]" placeholder="Enter Country" type="text" class="form-control" id="in-country"  required>
+       <div class="invalid-feedback">country Should Be Valid</div>
+       <div class="valid-feedback">Looks Great</div>
     </div>
 </div>
     </div> 
@@ -42,6 +57,6 @@
     </form>
     <br>
     <br>
-    
+   
 </body>
 

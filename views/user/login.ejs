@@ -1,0 +1,31 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row">
+    <div class="col-6 offset-2">
+        <h1 class="mb-4 text-center"><b> Log  In For Wonder<span style="color:#FF5A5F ;">  Wrld</span></b></h1>
+
+        <form action="/login" method="POST" class="needs-validation" novalidate>
+            
+            <!-- Username -->
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input name="username" placeholder="Username" type="text" class="form-control" id="username" required>
+                <div class="invalid-feedback">Username should be valid!</div>
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+
+            
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input name="password" placeholder="Password" type="password" class="form-control" id="password" required>
+                <div class="invalid-feedback">Password should be strong!</div>
+                <div class="valid-feedback">Looks good!</div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-success">LogIn</button>
+        </form>
+    </div>
+</div>

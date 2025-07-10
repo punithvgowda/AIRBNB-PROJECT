@@ -1,8 +1,61 @@
+if(process.env.NODE_ENV!="production"){ //we will use .env file only in development phase not in production phase as we store our secret credentials it may lead to data brech
+  require('dotenv').config();
+}
+// console.log(process.env.SECRET);
+
+
 const express=require("express");
 const app=express();
 const mongoose=require("mongoose")
 const Listing=require("./models/listing.js")
 const ejsmate=require("ejs-mate")
+const wrapasync=require("./utils/wrapasync")
+const ExpressError=require("./EpressError.js")
+const listingschema=require("./schema.js");
+const Review=require("./models/review.js")
+const reviewss=require("./schema.js");
+const session=require("express-session");
+const MongoStore = require("connect-mongo");
+
+const flash = require('connect-flash');
+const passport = require('passport');
+const passportlocal=require('passport-local');
+const passportLocalMongoose = require('passport-local-mongoose');
+const LocalStrategy = require('passport-local').Strategy;
+
+
+//
+
+const listingsroute=require("./routes/listings.js");
+const reviewroute=require("./routes/reviews.js");
+const userroute=require("./routes/user.js");
+const user=require("./models/user.js");
+let MONGOOSEATLAS_URL=process.env.DB_URL;
+
+const store = MongoStore.create({
+  mongoUrl: MONGOOSEATLAS_URL,
+  crypto: {
+    secret: process.env.SECRET,
+  },
+  touchAfter: 24 * 3600,
+});
+
+const sessionOptions = {
+   store:store,
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    httpOnly: true,
+  },
+};
+
+
+
+
+
 
 const path=require("path");
 app.set("view engine","ejs");
@@ -11,15 +64,20 @@ app.use(express.urlencoded({ extended: true }));
 app.engine('ejs', ejsmate);
 app.use(express.static(path.join(__dirname,"/public")))
 
+
 //converting post request to put request
 const methodOverride = require("method-override");
+const { error } = require("console");
+const { request } = require("http");
+
 app.use(methodOverride("_method"));
+ app.use(flash());
 
 
  //connection with mongoose database
-let MONGOOSE_URL="mongodb://127.0.0.1:27017/AIRBNB";
+
 async function main(){
-    await mongoose.connect(MONGOOSE_URL);
+    await mongoose.connect(MONGOOSEATLAS_URL);
 }
 main(
 
@@ -34,54 +92,83 @@ main(
 let port=3000;
 app.listen(port,()=>{
     console.log("port is now listening")
-})
+}) ;
+  app.use(session(sessionOptions));
+    app.use(flash());
+      app.use(passport.initialize());//intialize
+    app.use(passport.session());//for strtingthe sesion after the login
+    passport.use(new LocalStrategy(user.authenticate()));//for autheticate before the login
+
+    passport.use(new LocalStrategy(user.authenticate()));
+
+    passport.serializeUser(user.serializeUser());
+    passport.deserializeUser(user.deserializeUser());
+
+  
+    app.use((req,res,next)=>{
+        res.locals.error=req.flash("error");  
+        res.locals.sucess=req.flash("sucess");
+        res.locals.currentuserinfo=req.user;
+        console.log(req.user);
+        
+        next();
+    })
+app.get("/search",async(req,res)=>{
     
-app.get("/",(req,res)=>{
-    res.send(" hlo there just chilling")
-    
-})
+    console.log(req.query.destinyname);
+   let searchindb=req.query.destinyname;
+   console.log(searchindb);
+ let resfromdb= await Listing.find({title:searchindb});
+console.log(resfromdb);
+if(resfromdb.length==0){
+    req.flash("error"," The Hotel you requested for doesn't exist");
+    res.redirect("/listings");
+}
+else{
 
 
-//index route
-app.get("/listings", async (req, res) => {
-    const allListing = await Listing.find({});
-    res.render("listing/index.ejs",{ allListing });
- });
- //new.ejs
- app.get("/listings/new",(req,res)=>{
-    res.render("listing/new.ejs")
-    console.log("new.ejs file was rendered sucessfully")
-  });
- //show route
-app.get("/listings/:id",async(req,res )=>{
-    let {id}=req.params;
-    const listings=await Listing.findById(id);
-    res.render("listing/show.ejs",{listings})
+    let id = resfromdb[0]._id.toString();
+const listings=await Listing.findById(id).populate({path:"reviews",populate:{ path:"author",}}).populate('owner');
+// if(!listings){
+//     req.flash("error","The Hotel you requested for doesn't exist");
+//    return  res.redirect("/listings")
+// }
+     //console.log(listings);
+    
+
+    console.log("Populated Reviews:", listings.reviews);
+
+  
+    res.render("listing/show.ejs",{listings})  
     console.log("ejs file rendered sucessfully")
+}
 })
-//create route
-app.post("/listings",(req,res)=>{
-    console.log(req.body.Listing) // object will get created atomatically
-    const listing=new Listing(req.body.Listing) //creating new instance
-    listing.save();                             // saved to database
-    res.redirect("listings")
-})
-//edit route
-app.get("/listings/:id/edit",async (req,res)=>{
-    let {id}=req.params;
-    let listing=await Listing.findById(id);
-     res.render("listing/edit.ejs",{listing})
-})
-//update route
-app.put("/listing/:id",async(req,res)=>{
-    let {id}=req.params;
-    await Listing.findByIdAndUpdate(id,{...req.body.Listing})
-   res.redirect(`/listings`)
-})
-//delete route
-app.post("/listings/:id",async(req,res)=>{
-    let{id}=req.params;
-    const deletedhotel=await Listing.findByIdAndDelete(id);
-    console.log(deletedhotel);
-    res.redirect("/listings")
-})
+  
+
+// app.get("/demouser",async (req,res)=>{
+//     const user1r=new user({
+//         email:"punithvgowda@gmail.com",
+//         username:"punith"
+//     })
+//     let registereduser= await user.register(user1r,"fakepassword");
+//     res.send(registereduser);
+// });
+
+
+
+
+// the code which are suposed to be here are saved in routes making two files nmaed listinggs and reviews and just using router concept
+
+app.use("/listings", listingsroute); // ✅ use the imported router, not a string
+app.use("/listings/:id/review",reviewroute);
+app.use("/",userroute)
+
+
+
+    
+
+app.use((err,req,res,next)=>{
+    let{status=500,message="somethingwentwrong"}=err;
+    res.status(status).render("./listing/error.ejs",{message})
+});
+
