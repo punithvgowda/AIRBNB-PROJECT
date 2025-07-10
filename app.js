@@ -114,9 +114,9 @@ app.listen(port,()=>{
         next();
     });
 
-//     app.get("/", (req, res) => {
-//   res.send("Hello from Airbnb clone!");
-// });
+    app.get("/", (req, res) => {
+  res.send("Hello from Airbnb clone!");
+});
 app.get("/search",async(req,res)=>{
     
     console.log(req.query.destinyname);
