@@ -76,16 +76,16 @@ app.use(methodOverride("_method"));
 
  //connection with mongoose database
 
+const port = process.env.PORT || 10000;
+  app.listen(port, () => {
+    console.log(`🚀 Server running on port ${port}`);
+  });
+
 async function main(){
     await mongoose.connect(MONGOOSEATLAS_URL);
 }
 main().then(() => {
   console.log("✅ MongoDB connection successful");
-
-  const port = 10000 ||  process.env.PORT ;
-  app.listen(port, () => {
-    console.log(`🚀 Server running on port ${port}`);
-  });
 
 }).catch((err) => {
   console.error("❌ MongoDB connection failed:", err);
