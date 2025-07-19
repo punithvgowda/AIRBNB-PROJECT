@@ -82,7 +82,7 @@ async function main(){
 main().then(() => {
   console.log("✅ MongoDB connection successful");
 
-  const port = process.env.PORT || 4000;
+  const port = 10000 ||  process.env.PORT ;
   app.listen(port, () => {
     console.log(`🚀 Server running on port ${port}`);
   });
