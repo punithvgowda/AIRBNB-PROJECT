@@ -75,21 +75,22 @@ app.use(methodOverride("_method"));
 
 
  //connection with mongoose database
-
 const port = process.env.PORT || 10000;
-  app.listen(port, () => {
-    console.log(`🚀 Server running on port ${port}`);
-  });
 
-async function main(){
-    await mongoose.connect(MONGOOSEATLAS_URL);
-}
-main().then(() => {
-  console.log("✅ MongoDB connection successful");
-
-}).catch((err) => {
-  console.error("❌ MongoDB connection failed:", err);
+app.listen(port, () => {
+  console.log(`🚀 Server running on port ${port}`);
+  connectToMongoDB(); // connect AFTER server starts
 });
+
+async function connectToMongoDB() {
+  try {
+    await mongoose.connect(MONGOOSEATLAS_URL);
+    console.log("✅ MongoDB connection successful");
+  } catch (err) {
+    console.error("❌ MongoDB connection failed:", err);
+  }
+}
+
 
   app.use(session(sessionOptions));
     app.use(flash());
