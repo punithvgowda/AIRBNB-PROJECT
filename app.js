@@ -82,7 +82,7 @@ app.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
   connectToMongoDB(); // connect AFTER server starts
 });
-
+//connecting to database
 async function connectToMongoDB() {
   try {
     await mongoose.connect(MONGOOSEATLAS_URL);
