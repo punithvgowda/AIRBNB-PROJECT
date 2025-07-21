@@ -76,7 +76,7 @@ app.use(methodOverride("_method"));
 
  //connection with mongoose database
 const port = process.env.PORT || 10000;
-console.log(port);
+
 
 app.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
@@ -109,7 +109,7 @@ async function connectToMongoDB() {
         res.locals.error=req.flash("error");  
         res.locals.sucess=req.flash("sucess");
         res.locals.currentuserinfo=req.user;
-        // console.log(req.user);
+      
         
         next();
     });
@@ -121,7 +121,7 @@ app.get("/search",async(req,res)=>{
     
     // console.log(req.query.destinyname);
    let searchindb=req.query.destinyname;
-//    console.log(searchindb);
+
  let resfromdb= await Listing.find({title:searchindb});
 // console.log(resfromdb);
 if(resfromdb.length==0){
